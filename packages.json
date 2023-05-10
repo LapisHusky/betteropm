@@ -1,0 +1,653 @@
+[
+    {
+        "name": "owop-tool-class",
+        "version": "v1.1",
+        "author": "саня махан (rus)",
+        "description": "OWOP Tool Class — create tools simply.\n\nPlease, read documentation before using: https://rentry.co/48xfo",
+        "categories": [
+            "Library",
+            "API"
+        ],
+        "dependencies": [],
+        "installs": 131,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1655837709287
+    },
+    {
+        "name": "sajvnczeid-radio",
+        "version": "1.5.1",
+        "author": "Flawed",
+        "description": "Media Player with multiple stations, and the ability to add one custom JSON playlist. Allows for Stopping/Playing, Skipping and Looping.\nIncludes music from the now-broken Daydun Radio.\nCONTACT Drakevskiy C.#8230 WITH ANY BUG REPORTS",
+        "categories": [
+            "Music"
+        ],
+        "dependencies": [],
+        "installs": 37,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1652921245851
+    },
+    {
+        "name": "notifications",
+        "version": "1.0",
+        "author": "Rugtveit",
+        "description": "Adds join, leave and dm notifications.\nSource: https://github.com/Rugtveit/owop-scripts",
+        "categories": [],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 153,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1619389991269,
+        "noThumb": true
+    },
+    {
+        "name": "cursor-nicks-big",
+        "version": "1.0",
+        "author": "Lighthexagon",
+        "description": "Good for reporting players / moderating custom worlds\n[incompatible with cursor-nicks]\n",
+        "categories": [],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 283,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1616695185744,
+        "noThumb": true
+    },
+    {
+        "name": "coords-saver",
+        "version": "1.0.1",
+        "author": "enixx",
+        "description": "Save coordinates with names in OWOP, Click in their name to teleport to the coordinates.",
+        "categories": [
+            "Coordinates",
+            " Save"
+        ],
+        "dependencies": [],
+        "installs": 391,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1611526313442
+    },
+    {
+        "name": "polybius",
+        "version": "4.0",
+        "author": "dimden",
+        "description": "Just perfect bots. Video: https://lune.dimden.dev/polybius.mp4",
+        "categories": [
+            "bots",
+            "minibots"
+        ],
+        "dependencies": [
+            "core-utils",
+            "api",
+            "owop-js"
+        ],
+        "installs": 37,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": 1000,
+        "created": 1600034584805
+    },
+    {
+        "name": "pixel-paste",
+        "version": "1.0.0",
+        "author": "DayDun",
+        "description": "Paster tool",
+        "categories": [
+            "tool"
+        ],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 28,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": 50,
+        "created": 1596578311782,
+        "noThumb": true
+    },
+    {
+        "name": "better-owop-js",
+        "version": "1.1.2",
+        "author": "mathias377",
+        "description": "better owop js (BETA)\nqueued requests of chunks\nand more https://github.com/mathmakgakpak/better-owop.js",
+        "categories": [
+            "library"
+        ],
+        "dependencies": [],
+        "installs": 535,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1589186406373,
+        "noThumb": true
+    },
+    {
+        "name": "area-erase",
+        "version": "1.0.3",
+        "author": "dimden",
+        "description": "Area Erase tool for admins and mods.",
+        "categories": [
+            "tool"
+        ],
+        "dependencies": [],
+        "installs": 424,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1588184535931,
+        "noThumb": true
+    },
+    {
+        "name": "video-player",
+        "version": "1.0.1",
+        "author": "enix",
+        "description": "View Videos from Youtube in OWOP!",
+        "categories": [
+            "Video",
+            "Window"
+        ],
+        "dependencies": [],
+        "installs": 93,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1587516509864
+    },
+    {
+        "name": "speed-window",
+        "version": "1.0.5",
+        "author": "enix",
+        "description": "Manage your Speed!",
+        "categories": [
+            "Speed",
+            " Window"
+        ],
+        "dependencies": [],
+        "installs": 491,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1586576743136
+    },
+    {
+        "name": "speed-o-meter",
+        "version": "1.0.1",
+        "author": "dimden",
+        "description": "Shows how many pixels you travel per second and your location.",
+        "categories": [],
+        "dependencies": [],
+        "installs": 353,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1584985855490,
+        "noThumb": true
+    },
+    {
+        "name": "emotes",
+        "version": "1.2",
+        "author": "Anonygold",
+        "description": "Discord-like emote menu for OWOP.",
+        "categories": [
+            "Chat",
+            " Emojis"
+        ],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 647,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1583640380032
+    },
+    {
+        "name": "fonts",
+        "version": "1.0",
+        "author": "BoT",
+        "description": "opm-fonts.glitch.me",
+        "categories": [
+            "Library"
+        ],
+        "dependencies": [],
+        "installs": 442,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1579741580232,
+        "noThumb": true
+    },
+    {
+        "name": "nicks-saver",
+        "version": "1.5.0",
+        "author": "BoT",
+        "description": "Saves players nicknames and restores them when you play again!",
+        "categories": [
+            "Useful"
+        ],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 387,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1579140491412,
+        "noThumb": true
+    },
+    {
+        "name": "shadow-tool",
+        "version": "2.0.1",
+        "author": "kapycta123 & dimden",
+        "description": "Draw with shadow instantly.",
+        "categories": [
+            "Tool"
+        ],
+        "dependencies": [],
+        "installs": 653,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1578420686668,
+        "noThumb": true
+    },
+    {
+        "name": "player-list-plus",
+        "version": "3.0.0",
+        "author": "BoT",
+        "description": "Makes the player list even more useful!",
+        "categories": [
+            "Extension"
+        ],
+        "dependencies": [
+            "core-utils",
+            "teleport",
+            "player-list"
+        ],
+        "installs": 702,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1578168555629,
+        "noThumb": true
+    },
+    {
+        "name": "palette-ai",
+        "version": "1.0.2",
+        "author": "dimden",
+        "description": "Manage and generate palettes! Use '/palette' for help.",
+        "categories": [],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 427,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1577889927555
+    },
+    {
+        "name": "owop-98",
+        "version": "1.6",
+        "author": "Anonygold",
+        "description": "Windows 98 style in OWOP.",
+        "categories": [
+            "Style",
+            "Theme"
+        ],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 188,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1577551078359
+    },
+    {
+        "name": "your-connections",
+        "version": "1.2.5",
+        "author": "BoT",
+        "description": "Shows your connections and max. Hover over to see your ip",
+        "categories": [],
+        "dependencies": [
+            "api"
+        ],
+        "installs": 433,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1577227715699,
+        "noThumb": true
+    },
+    {
+        "name": "api",
+        "version": "1.0",
+        "author": "BoT",
+        "description": "opm-api.glitch.me",
+        "categories": [
+            "Library"
+        ],
+        "dependencies": [],
+        "installs": 844,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1577164396144,
+        "noThumb": true
+    },
+    {
+        "name": "owop-js",
+        "version": "2.0.1",
+        "author": "dimden",
+        "description": "OJS is now in OPM. Use OPM.require(\"owop-js\") for Client, ChunkSystem, Chunks and Bucket",
+        "categories": [
+            "Library"
+        ],
+        "dependencies": [],
+        "installs": 554,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1576922738962,
+        "noThumb": true
+    },
+    {
+        "name": "image-uploader",
+        "version": "1.0.0",
+        "author": "dimden",
+        "description": "Upload images with CTRL+V in chat!",
+        "categories": [
+            "Chat",
+            " Quality of life"
+        ],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 13,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": 100,
+        "created": 1576776340260,
+        "noThumb": true
+    },
+    {
+        "name": "owop-api",
+        "version": "2.0",
+        "author": "BoT",
+        "description": "Displays owop api directly in an owop window!",
+        "categories": [
+            "Window"
+        ],
+        "dependencies": [
+            "api",
+            "core-utils"
+        ],
+        "installs": 318,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1576761795619
+    },
+    {
+        "name": "recover-tool",
+        "version": "1.0.0",
+        "author": "dimden",
+        "description": "Clears the grief.",
+        "categories": [
+            "Tool"
+        ],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 696,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1574007467604
+    },
+    {
+        "name": "tetris",
+        "version": "1.0.6",
+        "author": "dimden",
+        "description": "Tetris in OWOP.",
+        "categories": [
+            "Game"
+        ],
+        "dependencies": [],
+        "installs": 285,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1566600682710
+    },
+    {
+        "name": "zoom-slider",
+        "version": "1.1",
+        "author": "Anonygold",
+        "description": "Allows you to change the zoom level quickly",
+        "categories": [
+            "Window"
+        ],
+        "dependencies": [],
+        "installs": 557,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1566589494000
+    },
+    {
+        "name": "server-selector",
+        "version": "2.2",
+        "author": "mathias377",
+        "description": "Server Selector allows you to change server.\nTo open it write '/openss' or '/openserverselector'",
+        "categories": [],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 394,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1566130501877
+    },
+    {
+        "name": "admin-tools",
+        "version": "1.0",
+        "author": "DayDun",
+        "description": "Get all of the admin tools",
+        "categories": [
+            "Tool"
+        ],
+        "dependencies": [],
+        "installs": 58,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1565362381370,
+        "noThumb": true
+    },
+    {
+        "name": "teleport",
+        "version": "1.0",
+        "author": "DayDun",
+        "description": "Teleport using /tp",
+        "categories": [
+            "Command"
+        ],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 1171,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1565323240963,
+        "noThumb": true
+    },
+    {
+        "name": "world-switch",
+        "version": "1.0",
+        "author": "DayDun",
+        "description": "Quickly change world with /world command",
+        "categories": [
+            "Command"
+        ],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 361,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1565320345269,
+        "noThumb": true
+    },
+    {
+        "name": "crimson-client",
+        "version": "2.1.0",
+        "author": "dimden",
+        "description": "https://dimden.dev/crimson/ for description.",
+        "categories": [
+            "Client",
+            " Utils",
+            " Tools",
+            " Windows"
+        ],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 28,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": 500,
+        "created": 1565111039966
+    },
+    {
+        "name": "minibot-client",
+        "version": "2.5.1",
+        "author": "dimden",
+        "description": "Outdated bots, ancestor of Polybius",
+        "categories": [
+            "bots"
+        ],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 7,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": 9999,
+        "created": 1565108088382,
+        "noThumb": true
+    },
+    {
+        "name": "circle-tool",
+        "version": "1.0",
+        "author": "DayDun",
+        "description": "Tool for drawing circles",
+        "categories": [
+            "Tool"
+        ],
+        "dependencies": [],
+        "installs": 965,
+        "likes": 0,
+        "dislikes": 0,
+        "created": 1564589883000
+    },
+    {
+        "name": "cursor-nicks",
+        "version": "1.0",
+        "author": "DayDun",
+        "description": "Display nicknames under cursors",
+        "categories": [],
+        "dependencies": [
+            "core-utils"
+        ],
+        "installs": 901,
+        "likes": 0,
+        "dislikes": 0,
+        "created": 1564532740000
+    },
+    {
+        "name": "core-utils",
+        "version": "1.0",
+        "author": "DevOp",
+        "description": "Utility library for OWOP. https://opm-core-utils.glitch.me/",
+        "categories": [
+            "Library"
+        ],
+        "dependencies": [],
+        "installs": 1519,
+        "likes": 0,
+        "dislikes": 0,
+        "created": 1564512717000,
+        "noThumb": true
+    },
+    {
+        "name": "bucket-inspector",
+        "version": "1.0",
+        "author": "DayDun",
+        "description": "View the place bucket live",
+        "categories": [],
+        "dependencies": [],
+        "installs": 626,
+        "likes": 0,
+        "dislikes": 0,
+        "created": 1564504899000,
+        "noThumb": true
+    },
+    {
+        "name": "pixel-eraser",
+        "version": "1.0",
+        "author": "DayDun",
+        "description": "Erase chunks",
+        "categories": [
+            "Tool"
+        ],
+        "dependencies": [],
+        "installs": 1096,
+        "likes": 0,
+        "dislikes": 0,
+        "created": 1564447843000
+    },
+    {
+        "name": "radio",
+        "version": "1.0",
+        "author": "DayDun",
+        "description": "DayDun's radio in OWOP",
+        "categories": [
+            "Window"
+        ],
+        "dependencies": [],
+        "installs": 200,
+        "likes": 0,
+        "dislikes": 0,
+        "created": 1564439634000
+    },
+    {
+        "name": "player-list",
+        "version": "1.0",
+        "author": "DayDun",
+        "description": "Displays all players",
+        "categories": [
+            "Window"
+        ],
+        "dependencies": [],
+        "installs": 1045,
+        "likes": 0,
+        "dislikes": 0,
+        "created": 1564430213000
+    }
+]
