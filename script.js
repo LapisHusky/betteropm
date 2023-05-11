@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        opm minus dimden
+// @name        betteropm
 // @namespace   Violentmonkey Scripts
 // @match       https://ourworldofpixels.com/*
 // @grant       none
