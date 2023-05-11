@@ -96,7 +96,8 @@
         "likes": 0,
         "dislikes": 0,
         "cost": 1000,
-        "created": 1600034584805
+        "created": 1600034584805,
+        "unavailable": true
     },
     {
         "name": "pixel-paste",
@@ -114,7 +115,8 @@
         "dislikes": 0,
         "cost": 50,
         "created": 1596578311782,
-        "noThumb": true
+        "noThumb": true,
+        "unavailable": true
     },
     {
         "name": "better-owop-js",
@@ -382,7 +384,8 @@
         "dislikes": 0,
         "cost": 100,
         "created": 1576776340260,
-        "noThumb": true
+        "noThumb": true,
+        "unavailable": true
     },
     {
         "name": "owop-api",
@@ -534,7 +537,8 @@
         "likes": 0,
         "dislikes": 0,
         "cost": 500,
-        "created": 1565111039966
+        "created": 1565111039966,
+        "unavailable": true
     },
     {
         "name": "minibot-client",
@@ -552,7 +556,8 @@
         "dislikes": 0,
         "cost": 9999,
         "created": 1565108088382,
-        "noThumb": true
+        "noThumb": true,
+        "unavailable": true
     },
     {
         "name": "circle-tool",
