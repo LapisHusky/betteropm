@@ -38,6 +38,7 @@
                 let player = this.list[id];
 
                 if (OWOP.player.rank >= 2 && OWOP.world.name === 'main') {
+                    player.fetchedData = true
                     fetch('https://ourworldofpixels.com/api/playerinfo', {
                         headers: {
                             'x-player-id': id,
@@ -84,7 +85,8 @@
                 if (rank < 2) return
                 for (let id in this.list) {
                     let player = this.list[id]
-                    if (player.o) continue
+                    if (player.fetchedData) continue
+                    player.fetchedData = true
                     fetch('https://ourworldofpixels.com/api/playerinfo', {
                         headers: {
                             'x-player-id': id,
@@ -115,6 +117,7 @@
             let player = new Player(id, data.x, data.y, data.rgb, data.tool);
 
             if (OWOP.player.rank >= 2 && OWOP.world.name === 'main') {
+                player.fetchedData = true
                 fetch('https://ourworldofpixels.com/api/playerinfo', {
                     headers: {
                         'x-player-id': id,
