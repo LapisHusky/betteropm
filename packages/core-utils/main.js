@@ -37,7 +37,7 @@
                 this.list[id] = new Player(id, p.x, p.y, p.rgb, p.tool.id);
                 let player = this.list[id];
 
-                if (OWOP.player.rank === 2 && OWOP.world.name === 'main') {
+                if (OWOP.player.rank >= 2 && OWOP.world.name === 'main') {
                     fetch('https://ourworldofpixels.com/api/playerinfo', {
                         headers: {
                             'x-player-id': id,
@@ -80,12 +80,41 @@
                     this.playerLeave(players[i]);
                 }
             });
+            OWOP.on(OWOP.events.net.sec.rank, rank => {
+                if (rank < 2) return
+                for (let id in this.list) {
+                    let player = this.list[id]
+                    if (player.o) continue
+                    fetch('https://ourworldofpixels.com/api/playerinfo', {
+                        headers: {
+                            'x-player-id': id,
+                            'x-password': JSON.parse(localStorage.worldPasswords).main
+                        }
+                    }).then(i => i.json()).then(i => {
+                        if (i.data) {
+                            fetch('https://ourworldofpixels.com/api/playerinfo', {
+                                headers: {
+                                    'x-player-ip': i.data,
+                                    'x-password': JSON.parse(localStorage.worldPasswords).main
+                                }
+                            }).then(i => i.json()).then(i => {
+                                if (i.data.connInfo[0]) {
+                                    player.o = i.data.connInfo[0];
+                                    if (player.o.nick.includes(']')) player.nick = player.o.nick.split('] ').slice(1).join(']');
+                                    if (player.o.rank === 3) player.nick = player.o.nick;
+                                    player.rank = player.o.rank;
+                                }
+                            });
+                        }
+                    });
+                }
+            })
         }
 
         playerJoin(id, data) {
             let player = new Player(id, data.x, data.y, data.rgb, data.tool);
 
-            if (OWOP.player.rank === 2 && OWOP.world.name === 'main') {
+            if (OWOP.player.rank >= 2 && OWOP.world.name === 'main') {
                 fetch('https://ourworldofpixels.com/api/playerinfo', {
                     headers: {
                         'x-player-id': id,
