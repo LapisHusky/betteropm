@@ -14,42 +14,13 @@
 
     class Player {
         constructor(id, x, y, rgb, tool) {
-            var props = ["4", "6", "3", "2", "1", "5", "0"],
-                currentProp = '0';
-
-            while ('true') {
-                switch (QmWyvk[currentProp++]) {
-                    case '0':
-                        this.o = {};
-                        continue;
-
-                    case '1':
-                        this.tool = tool;
-                        continue;
-
-                    case '2':
-                        this.rgb = rgb;
-                        continue;
-
-                    case '3':
-                        this.y = y;
-                        continue;
-
-                    case '4':
-                        this.id = id;
-                        continue;
-
-                    case '5':
-                        this.nick = null;
-                        continue;
-
-                    case '6':
-                        this.x = x;
-                        continue;
-                }
-
-                break;
-            }
+            this.o = {}
+            this.tool = tool
+            this.rgb = rgb
+            this.y = y
+            this.id = id
+            this.nick = null
+            this.x = x
         }
 
     }
