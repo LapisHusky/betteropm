@@ -1,13 +1,16 @@
 // ==UserScript==
 // @name        opm but better
 // @namespace   Violentmonkey Scripts
-// @match       https://ourworldofpixels.com/
+// @match       https://ourworldofpixels.com/*
 // @grant       none
 // @version     1.0
 // @author      Lapis
 // @description 2/3/2022, 12:07:00 AM
 // @run-at      document-start
 // ==/UserScript==
+
+//this uses https://github.com/LapisHusky/betteropm to download scripts, json, and images. you may make pull requests there to change/add packages.
+const filesURLBase = "https://raw.githubusercontent.com/LapisHusky/betteropm/main/"
 
 let moduleList = []
 
@@ -24,6 +27,11 @@ Object.defineProperty = function() {
   }
   return returnValue
 }
+
+let worldJoinPromiseResolve
+let worldJoinPromise = new Promise(r => {
+    worldJoinPromiseResolve = r
+})
 
 let modules = {}
 
@@ -57,6 +65,9 @@ function finishedLoading() {
   //add OWOP.misc
   OWOP.misc = modules.main.misc
 
+  //set OWOP.tool because apparently OPM puts it there instead of OPM.tools
+  OWOP.tool = OWOP.tools
+
   //add OWOP.require
   OWOP.require = function getModule(name) {
     if (modules[name]) {
@@ -65,10 +76,57 @@ function finishedLoading() {
       throw new Error(`No module by the name ${name}`)
     }
   }
+
+  //world join promise - triggers loading OPM further
+  OWOP.once(modules.conf.EVENTS.net.world.join, worldJoinPromiseResolve)
 }
 
 let style = document.createElement('style')
 style.innerHTML = `
+/* CSS fixes for OPM differences */
+@font-face {
+    font-family: mc;
+    src: url(https://cdn.glitch.com/4ff37d62-fd30-4a0b-ab75-481ff6be5f5f%2Fru.ttf?v=1578477186149) format('truetype')
+}
+.whitetext, #chat, #dev-chat, .top-bar {
+    color: #FFF;
+	font: 16px pixel-op, sans-serif;
+	text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
+}
+#top-bar, #palette {
+	position: absolute;
+	pointer-events: none;
+	transform: translateY(-100%);
+	transition: transform 0.75s;
+}
+#top-bar {
+	width: 100%;
+}
+.top-bar {
+	position: relative;
+	top: -4px;
+    margin-right: 15px;
+}
+#palette-create, #palette, .framed, .top-bar {
+	border: 5px #aba389 solid;
+	-o-border-image: url(${filesURLBase}client/img/small_border.png) 5 repeat;
+	   border-image: url(${filesURLBase}client/img/small_border.png) 5 repeat;
+	border-image-outset: 1px;
+	background-color: #7e635c;
+	box-shadow: 0px 0px 5px #000;
+}
+#xy-display {
+	padding-left: 2px;
+	left: -4px;
+	float: left;
+    position: relative;
+}
+#playercount-display {
+	right: -4px;
+	float: right;
+    position: relative;
+}
+
 /* General */
 
 #opm p {
@@ -301,7 +359,7 @@ button#opm-deposit-btn {
 	height: 16px;
 	vertical-align: sub;
 	margin-right: 4px;
-	background-image: url(https://opm.dimden.dev/client/img/downloads-icon.png);
+	background-image: url(${filesURLBase}client/img/downloads-icon.png);
 	opacity: 0.4;
 }
 
@@ -316,7 +374,7 @@ button#opm-deposit-btn {
 let htmlText = `
 <div id="opm" class="packages">
 <header id="opm-header">
-<img src="https://opm.dimden.dev/client/img/opm-2.png" />
+<img src="${filesURLBase}client/img/opm-2.png" />
 <span class="title">OWOP Package Manager 2</span>
 </header>
 <main id="opm-packages-tab">
@@ -327,10 +385,242 @@ let htmlText = `
 </div>
 `
 
+let user = {
+    name: "you",
+    balance: 0,
+    installed: [],
+    boughtScripts: ["polybius","pixel-paste","image-uploader","crimson-client","minibot-client"],
+    locale: "en-US"
+}
+if (localStorage.OPMInstalled) user.installed = JSON.parse(localStorage.OPMInstalled)
+function saveInstalled() {
+    localStorage.OPMInstalled = JSON.stringify(user.installed)
+}
+
+class PackageItem {
+    constructor(data) {
+        this.name = data.name
+        this.version = data.version
+        this.author = data.author
+        this.description = data.description
+        this.categories = data.categories
+        this.dependencies = data.dependencies
+        this.downloads = data.installs
+        this.cost = data.cost
+        this.sale = data.sale
+        this.installed = false
+        this.installing = false
+        this.bought = true
+        this.element = document.createElement("li")
+
+        let thumbnail = document.createElement("img")
+        if (data.noThumb) {
+            thumbnail.src = filesURLBase + "client/img/placeholder.png"
+        } else {
+            thumbnail.src = filesURLBase + `packages/${this.name}/thumb.png`
+        }
+        this.element.appendChild(thumbnail)
+
+        let mainDiv = document.createElement("div")
+        mainDiv.className = "body"
+        mainDiv.id = `opm-package-${this.name}`
+        if (this.name === "polybius") mainDiv.style.background = "rgb(0 15 17 / 90%)"
+        if (this.name === "crimson-client") mainDiv.style.background = "#2e0f0f"
+
+        let header = document.createElement("header")
+        let title = document.createElement("span")
+        title.className = "title"
+        title.textContent = this.name
+        header.appendChild(title)
+        let version = document.createElement("span")
+        version.className = "version"
+        version.textContent = this.version
+        header.appendChild(version)
+        let author = document.createElement("span")
+        author.className = "author"
+        author.textContent = this.author
+        header.appendChild(author)
+        mainDiv.appendChild(header)
+
+        let description = document.createElement("p")
+        description.className = "description"
+        description.textContent = this.description
+        mainDiv.appendChild(description)
+
+        let footer = document.createElement("footer")
+        let categories = document.createElement("ul")
+        categories.className = "categories"
+        for (let i = 0; i < this.categories.length; i++) {
+            let category = document.createElement("li")
+            category.textContent = this.categories[i]
+            categories.appendChild(category)
+        }
+        footer.appendChild(categories)
+
+        this.installBtn = document.createElement("button")
+        this.installBtn.addEventListener("click", () => {
+            if (this.installed) {
+                this.uninstall()
+            } else {
+                this.install()
+            }
+        })
+        this.setInstalled(false)
+        footer.appendChild(this.installBtn)
+
+        this.downloadIndicator = document.createElement("span")
+        this.downloadIndicator.className = "downloads"
+        this.downloadIndicator.textContent = this.downloads
+        footer.appendChild(this.downloadIndicator)
+
+        mainDiv.appendChild(footer)
+        this.element.appendChild(mainDiv)
+    }
+
+    setInstalled(value) {
+        this.installBtn.className = value ? "uninstall" : "install"
+        this.installBtn.textContent = value ? "Uninstall" : "Install"
+    }
+
+    async install() {
+        if (this.installing || this.installed) return
+        this.installing = true
+        this.setInstalled(true)
+        for (let dependency of this.dependencies) {
+            let dependencyPackageItem = opmPackages.get(dependency)
+            if (!dependencyPackageItem.installed) {
+                await dependencyPackageItem.install()
+            }
+        }
+        if (!this.module) {
+            let script = await fetch(filesURLBase + `packages/${this.name}/main.js`)
+            script = await script.text()
+            this.module = eval(script)
+        }
+        this.module.install()
+        if (!user.installed.includes(this.name)) {
+            user.installed.push(this.name)
+            saveInstalled()
+        }
+        this.installed = true
+        this.installing = false
+    }
+
+    uninstall() {
+        if (!this.installed) return
+        let usedBy = []
+        for (let packageItem of opmPackages.values()) {
+            if (!packageItem.installing && !packageItem.installed) continue
+            if (!packageItem.dependencies.includes(this.name)) continue
+            usedBy.push(packageItem.name)
+        }
+        if (usedBy.length > 0) {
+            alert(`This library is being used by other packages. Please uninstall them first: ${usedBy.join(", ")}`)
+            return
+        }
+        this.setInstalled(false)
+        this.module.uninstall()
+        this.installed = false
+        user.installed.splice(user.installed.indexOf(this.name), 1)
+        saveInstalled()
+    }
+}
+
+async function startOPM() {
+    let res = await fetch(filesURLBase + "packages.json")
+    let packages = await res.json()
+    for (let package of packages) {
+        opmPackages.set(package.name, new PackageItem(package))
+    }
+    updatePackageList()
+    await worldJoinPromise
+
+    //fix tools window so it grows properly
+    {
+        let owopTools = OWOP.require('tools')
+        let original = OWOP.tools.updateToolbar
+        let newFunction = function() {
+            Reflect.apply(original, this, arguments)
+            let container = owopTools.toolsWindow.container
+            container.style.maxWidth = 40 * Math.ceil(container.children.length / 8) + "px"
+        }
+        OWOP.tools.updateToolbar = newFunction
+        owopTools.updateToolbar = newFunction
+    }
+
+    //add missing elements in publicAPI
+    {
+        OWOP.elements.bigChatToggle = document.getElementById("big-chat")
+        OWOP.elements.opm = document.getElementById("opm")
+        OWOP.elements.topBar = document.getElementById("top-bar")
+    }
+
+    //add "update" to Bucket
+    {
+        let bucketModule = OWOP.require("bucket")
+        let original = bucketModule.Bucket
+        let updateFn = function() {
+            this.allowance += (Date.now() - this.lastCheck) / 1e3 * (this.rate / this.time), this.lastCheck = Date.now(), this.allowance > this.rate && (this.allowance = this.rate)
+        }
+        bucketModule.Bucket = function() {
+            let bucket = Reflect.construct(original, arguments)
+            bucket.__proto__.update = updateFn
+            return bucket
+        }
+    }
+
+    for (let packageName of user.installed) {
+        let packageItem = opmPackages.get(packageName)
+        if (!packageItem) {
+            user.installed.splice(user.installed.indexOf(packageName), 1)
+            saveInstalled()
+            continue
+        }
+        packageItem.install()
+    }
+}
+
+let opmPackages = new Map()
+let packList
+
+function updatePackageList() {
+    while (packList.firstChild) {
+        packList.removeChild(packList.firstChild)
+    }
+    for (let package of opmPackages.values()) {
+        packList.appendChild(package.element)
+    }
+}
+
 addEventListener("load", () => {
     document.head.appendChild(style)
     document.body.insertAdjacentHTML("beforeend", htmlText);
-    document.getElementById("opm-header").addEventListener("click", function(t) {
+    document.getElementById("opm-header").addEventListener("click", function() {
         document.getElementById("opm").classList.toggle("open")
     })
+
+    //some adjustments to align with OPM
+    let xyDisplay = document.getElementById("xy-display")
+    xyDisplay.className = "top-bar"
+    document.body.removeChild(xyDisplay)
+    let playercountDisplay = document.getElementById("playercount-display")
+    playercountDisplay.className = "top-bar"
+    document.body.removeChild(playercountDisplay)
+    let topBar = document.createElement("div")
+    topBar.id = "top-bar"
+    topBar.style.transform = "initial"
+    topBar.appendChild(xyDisplay)
+    topBar.appendChild(playercountDisplay)
+    document.body.appendChild(topBar)
+
+    packList = document.getElementById("opm-packages")
+    startOPM()
 })
+
+
+
+
+
+
+
+//TODO: prevent revealSecrets, showDevChat, and showPlayerList from being called based on rank
