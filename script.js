@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name        opm but better
+// @name        opm minus dimden
 // @namespace   Violentmonkey Scripts
 // @match       https://ourworldofpixels.com/*
 // @grant       none
 // @version     1.0
 // @author      Lapis
-// @description 2/3/2022, 12:07:00 AM
+// @description 5/9/2023, 12:07:00 AM
 // @run-at      document-start
 // ==/UserScript==
 
@@ -15,17 +15,17 @@ const filesURLBase = localStorage.OPMFilesURL || "https://raw.githubusercontent.
 let moduleList = []
 
 let originalFunction = Object.defineProperty
-Object.defineProperty = function () {
-    let returnValue = originalFunction.call(originalFunction, ...arguments)
-    let object = arguments[0]
-    if (!object?.__esModule) return returnValue
-    moduleList.push(object)
-    if (moduleList.length === 1) {
-        setTimeout(() => {
-            finishedLoading()
-        }, 0)
-    }
-    return returnValue
+Object.defineProperty = function() {
+  let returnValue = originalFunction.call(originalFunction, ...arguments)
+  let object = arguments[0]
+  if (!object?.__esModule) return returnValue
+  moduleList.push(object)
+  if (moduleList.length === 1) {
+    setTimeout(() => {
+      finishedLoading()
+    }, 0)
+  }
+  return returnValue
 }
 
 let worldJoinPromiseResolve
@@ -36,55 +36,55 @@ let worldJoinPromise = new Promise(r => {
 let modules = {}
 
 function finishedLoading() {
-    modules.bucket = moduleList.find(module => module.Bucket)
-    modules.canvas_renderer = moduleList.find(module => module.unloadFarClusters)
-    modules.captcha = moduleList.find(module => module.loadAndRequestCaptcha)
-    modules.conf = moduleList.find(module => module.EVENTS)
-    modules.context = moduleList.find(module => module.createContextMenu)
-    modules.Fx = moduleList.find(module => module.PLAYERFX)
-    modules.global = moduleList.find(module => module.PublicAPI)
-    modules.local_player = moduleList.find(module => module.networkRankVerification)
-    modules.main = moduleList.find(module => module.revealSecrets)
-    modules.misc = moduleList.find(module => module.setCookie)
-    modules.networking = moduleList.find(module => module.net)
-    modules.Player = moduleList.find(module => module.Player)
-    modules.tools = moduleList.find(module => module.showToolsWindow)
-    modules.windowsys = moduleList.find(module => module.windowSys)
-    modules.World = moduleList.find(module => module.World)
+  modules.bucket = moduleList.find(module => module.Bucket)
+  modules.canvas_renderer = moduleList.find(module => module.unloadFarClusters)
+  modules.captcha = moduleList.find(module => module.loadAndRequestCaptcha)
+  modules.conf = moduleList.find(module => module.EVENTS)
+  modules.context = moduleList.find(module => module.createContextMenu)
+  modules.Fx = moduleList.find(module => module.PLAYERFX)
+  modules.global = moduleList.find(module => module.PublicAPI)
+  modules.local_player = moduleList.find(module => module.networkRankVerification)
+  modules.main = moduleList.find(module => module.revealSecrets)
+  modules.misc = moduleList.find(module => module.setCookie)
+  modules.networking = moduleList.find(module => module.net)
+  modules.Player = moduleList.find(module => module.Player)
+  modules.tools = moduleList.find(module => module.showToolsWindow)
+  modules.windowsys = moduleList.find(module => module.windowSys)
+  modules.World = moduleList.find(module => module.World)
 
-    modules.events = modules.global.eventSys.constructor
-    modules.all = moduleList //it's unsafe to access these by index as those values may change
+  modules.events = modules.global.eventSys.constructor
+  modules.all = moduleList //it's unsafe to access these by index as those values may change
 
-    //set OWOP.net and prevent revealSecrets from removing it
-    OWOP.net = modules.networking.net
-    modules.main.revealSecrets = () => { }
+  //set OWOP.net and prevent revealSecrets from removing it
+  OWOP.net = modules.networking.net
+  modules.main.revealSecrets = () => {}
 
-    //add OWOP.eventSys
-    OWOP.eventSys = modules.global.eventSys
+  //add OWOP.eventSys
+  OWOP.eventSys = modules.global.eventSys
 
-    //add OWOP.misc
-    OWOP.misc = modules.main.misc
+  //add OWOP.misc
+  OWOP.misc = modules.main.misc
 
-    //set OWOP.tool because apparently OPM puts it there instead of OPM.tools
-    OWOP.tool = OWOP.tools
+  //set OWOP.tool because apparently OPM puts it there instead of OPM.tools
+  OWOP.tool = OWOP.tools
 
-    //add OWOP.require
-    OWOP.require = function getModule(name) {
-        if (modules[name]) {
-            return modules[name]
-        } else {
-            throw new Error(`No module by the name ${name}`)
-        }
+  //add OWOP.require
+  OWOP.require = function getModule(name) {
+    if (modules[name]) {
+      return modules[name]
+    } else {
+      throw new Error(`No module by the name ${name}`)
     }
+  }
 
-    //add other events to OWOP.events
-    let allEvents = modules.conf.EVENTS
-    for (let key in allEvents) {
-        OWOP.events[key] = allEvents[key]
-    }
+  //add other events to OWOP.events
+  let allEvents = modules.conf.EVENTS
+  for (let key in allEvents) {
+    OWOP.events[key] = allEvents[key]
+  }
 
-    //world join promise - triggers loading OPM further
-    OWOP.once(OWOP.events.net.world.join, worldJoinPromiseResolve)
+  //world join promise - triggers loading OPM further
+  OWOP.once(OWOP.events.net.world.join, worldJoinPromiseResolve)
 }
 
 let style = document.createElement('style')
@@ -400,7 +400,7 @@ let user = {
     name: "you",
     balance: 0,
     installed: [],
-    boughtScripts: ["polybius", "pixel-paste", "image-uploader", "crimson-client", "minibot-client"],
+    boughtScripts: ["polybius","pixel-paste","image-uploader","crimson-client","minibot-client"],
     locale: "en-US"
 }
 if (localStorage.OPMInstalled) user.installed = JSON.parse(localStorage.OPMInstalled)
@@ -424,7 +424,7 @@ class PackageItem {
         this.cost = data.cost
         this.sale = data.sale
         this.installed = false
-        this.installing = false
+        this.installPromise = null
         this.bought = true
         this.unavailable = data.unavailable
         this.element = document.createElement("li")
@@ -506,14 +506,20 @@ class PackageItem {
 
     async install() {
         if (this.unavailable) return
-        if (this.installing || this.installed) return
-        this.installing = true
+        if (this.installed) return
+        if (this.installPromise) return this.installPromise //if this is already being loaded, wait for the current loading function to finish
+        let resolve
+        this.installPromise = new Promise(r => {
+            resolve = r
+        })
         this.setInstalled(true)
         for (let dependency of this.dependencies) {
             let dependencyPackageItem = opmPackages.find(pack => pack.name === dependency)
+            let installPromises = []
             if (!dependencyPackageItem.installed) {
-                await dependencyPackageItem.install()
+                installPromises.push(dependencyPackageItem.install())
             }
+            await Promise.all(installPromises)
         }
         if (!this.module) {
             let script = await fetch(filesURLBase + `packages/${this.name}/main.js`)
@@ -526,7 +532,8 @@ class PackageItem {
             saveInstalled()
         }
         this.installed = true
-        this.installing = false
+        resolve()
+        this.installing = null
     }
 
     uninstall() {
@@ -563,25 +570,25 @@ async function startOPM() {
         document.querySelector('div.content').insertAdjacentHTML('beforeend', `<label><input id="big-chat" type="checkbox">Big chat</label>`)
         let bigChat = document.getElementById("big-chat")
         let options = OWOP.require("conf").options
-        bigChat.addEventListener("change", function () {
-            options.bigChat = bigChat.checked
-            if (options.bigChat) {
-                document.getElementById("chat").style.width = "850px"
-                document.getElementById("chat").style.maxWidth = "850px"
-                document.getElementById("opm").style.left = "150px"
-                localStorage.bigChat = "1"
-            } else {
-                document.getElementById("chat").style.width = "450px"
-                document.getElementById("chat").style.maxWidth = "450px"
-                document.getElementById("opm").style.left = "450px"
-                delete localStorage.bigChat
-            }
-        })
-        if (localStorage.bigChat) {
-            bigChat.checked = true
+        bigChat.addEventListener("change", function() {
+          options.bigChat = bigChat.checked
+          if(options.bigChat) {
             document.getElementById("chat").style.width = "850px"
             document.getElementById("chat").style.maxWidth = "850px"
             document.getElementById("opm").style.left = "150px"
+            localStorage.bigChat = "1"
+          } else {
+            document.getElementById("chat").style.width = "450px"
+            document.getElementById("chat").style.maxWidth = "450px"
+            document.getElementById("opm").style.left = "450px"
+            delete localStorage.bigChat
+          }
+        })
+        if(localStorage.bigChat) {
+          bigChat.checked = true
+          document.getElementById("chat").style.width = "850px"
+          document.getElementById("chat").style.maxWidth = "850px"
+          document.getElementById("opm").style.left = "150px"
         }
     }
 
@@ -589,7 +596,7 @@ async function startOPM() {
     {
         let owopTools = OWOP.require('tools')
         let original = OWOP.tools.updateToolbar
-        let newFunction = function () {
+        let newFunction = function() {
             Reflect.apply(original, this, arguments)
             let container = owopTools.toolsWindow.container
             container.style.maxWidth = 40 * Math.ceil(container.children.length / 8) + "px"
@@ -609,10 +616,10 @@ async function startOPM() {
     {
         let bucketModule = OWOP.require("bucket")
         let original = bucketModule.Bucket
-        let updateFn = function () {
+        let updateFn = function() {
             this.allowance += (Date.now() - this.lastCheck) / 1e3 * (this.rate / this.time), this.lastCheck = Date.now(), this.allowance > this.rate && (this.allowance = this.rate)
         }
-        bucketModule.Bucket = function () {
+        bucketModule.Bucket = function() {
             let bucket = Reflect.construct(original, arguments)
             bucket.__proto__.update = updateFn
             return bucket
@@ -625,13 +632,13 @@ async function startOPM() {
         let originalShowPlayerList = mainModule.showPlayerList
         let originalShowDevChat = mainModule.showDevChat
         originalShowDevChat(true) //just throwing this in here to always show it, unsure if it works
-        mainModule.showPlayerList = function () {
+        mainModule.showPlayerList = function() {
             let stack = new Error().stack
             let line = stack.split("\n")[2]
             if (line && line.includes("app") && line.includes(".js")) return
             Reflect.apply(originalShowPlayerList, this, arguments)
         }
-        mainModule.showDevChat = function () {
+        mainModule.showDevChat = function() {
             let stack = new Error().stack
             let line = stack.split("\n")[2]
             if (line && line.includes("app") && line.includes(".js")) return
@@ -650,25 +657,20 @@ async function startOPM() {
         uploadScript: null,
         uploadThumbnail: null,
         user,
-        attemptLogin: () => { },
-        constructor: () => { },
-        loggedIn: () => { },
-        reloadPackages: () => { },
+        attemptLogin: () => {},
+        constructor: () => {},
+        loggedIn: () => {},
+        reloadPackages: () => {},
         require: name => {
             return opmPackages.find(pack => pack.name === name).module
         },
-        switchTab: () => { },
+        switchTab: () => {},
         updatePackageList
     }
 
     for (let packageName of user.installed) {
-        let packageItem = opmPackages.find(pack => pack.name === name)
-        if (!packageItem) {
-            user.installed.splice(user.installed.indexOf(packageName), 1)
-            saveInstalled()
-            continue
-        }
-        packageItem.install()
+        let packageItem = opmPackages.find(pack => pack.name === packageName)
+        if (packageItem) packageItem.install()
     }
 }
 
@@ -687,7 +689,7 @@ function updatePackageList() {
 addEventListener("load", () => {
     document.head.appendChild(style)
     document.body.insertAdjacentHTML("beforeend", htmlText);
-    document.getElementById("opm-header").addEventListener("click", function () {
+    document.getElementById("opm-header").addEventListener("click", function() {
         document.getElementById("opm").classList.toggle("open")
     })
 
