@@ -157,7 +157,9 @@
             "Video",
             "Window"
         ],
-        "dependencies": [],
+        "dependencies": [
+            "core-utils"
+        ],
         "installs": 93,
         "likes": 0,
         "dislikes": 0,
