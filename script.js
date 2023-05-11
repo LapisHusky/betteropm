@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 //this uses https://github.com/LapisHusky/betteropm to download scripts, json, and images. you may make pull requests there to change/add packages.
-const filesURLBase = "https://raw.githubusercontent.com/LapisHusky/betteropm/main/"
+const filesURLBase = localStorage.OPMFilesURL || "https://raw.githubusercontent.com/LapisHusky/betteropm/main/"
 
 let moduleList = []
 
@@ -77,8 +77,14 @@ function finishedLoading() {
     }
   }
 
+  //add other events to OWOP.events
+  let allEvents = modules.conf.EVENTS
+  for (let key in allEvents) {
+    OWOP.events[key] = allEvents[key]
+  }
+
   //world join promise - triggers loading OPM further
-  OWOP.once(modules.conf.EVENTS.net.world.join, worldJoinPromiseResolve)
+  OWOP.once(OWOP.events.net.world.join, worldJoinPromiseResolve)
 }
 
 let style = document.createElement('style')
@@ -348,6 +354,11 @@ button#opm-deposit-btn {
 	float: right;
 	background-color: #7c81a9;
 }
+
+#opm-packages > li > .body > footer > .unavailable {
+	float: right;
+	background-color: #ad4242;
+}
 #opm-packages > li > .body > footer > .downloads {
 	float: right;
 	margin: 6px;
@@ -397,6 +408,10 @@ function saveInstalled() {
     localStorage.OPMInstalled = JSON.stringify(user.installed)
 }
 
+function unstrictEval(text) {
+    return eval(text)
+}
+
 class PackageItem {
     constructor(data) {
         this.name = data.name
@@ -411,6 +426,7 @@ class PackageItem {
         this.installed = false
         this.installing = false
         this.bought = true
+        this.unavailable = data.unavailable
         this.element = document.createElement("li")
 
         let thumbnail = document.createElement("img")
@@ -459,13 +475,14 @@ class PackageItem {
 
         this.installBtn = document.createElement("button")
         this.installBtn.addEventListener("click", () => {
+            if (this.unavailable) return
             if (this.installed) {
                 this.uninstall()
             } else {
                 this.install()
             }
         })
-        this.setInstalled(false)
+        this.setInstalled(this.unavailable ? "unavailable" : false)
         footer.appendChild(this.installBtn)
 
         this.downloadIndicator = document.createElement("span")
@@ -478,16 +495,22 @@ class PackageItem {
     }
 
     setInstalled(value) {
+        if (value === "unavailable") {
+            this.installBtn.className = "unavailable"
+            this.installBtn.textContent = "Unavailable"
+            return
+        }
         this.installBtn.className = value ? "uninstall" : "install"
         this.installBtn.textContent = value ? "Uninstall" : "Install"
     }
 
     async install() {
+        if (this.unavailable) return
         if (this.installing || this.installed) return
         this.installing = true
         this.setInstalled(true)
         for (let dependency of this.dependencies) {
-            let dependencyPackageItem = opmPackages.get(dependency)
+            let dependencyPackageItem = opmPackages.find(pack => pack.name === dependency)
             if (!dependencyPackageItem.installed) {
                 await dependencyPackageItem.install()
             }
@@ -495,7 +518,7 @@ class PackageItem {
         if (!this.module) {
             let script = await fetch(filesURLBase + `packages/${this.name}/main.js`)
             script = await script.text()
-            this.module = eval(script)
+            this.module = unstrictEval(script)
         }
         this.module.install()
         if (!user.installed.includes(this.name)) {
@@ -509,7 +532,7 @@ class PackageItem {
     uninstall() {
         if (!this.installed) return
         let usedBy = []
-        for (let packageItem of opmPackages.values()) {
+        for (let packageItem of opmPackages) {
             if (!packageItem.installing && !packageItem.installed) continue
             if (!packageItem.dependencies.includes(this.name)) continue
             usedBy.push(packageItem.name)
@@ -519,10 +542,10 @@ class PackageItem {
             return
         }
         this.setInstalled(false)
-        this.module.uninstall()
-        this.installed = false
+        this.installed = false //do these 3 lines first in case uninstalling throws an error or in the case of core-utils, alerts and someone refreshes
         user.installed.splice(user.installed.indexOf(this.name), 1)
         saveInstalled()
+        this.module.uninstall()
     }
 }
 
@@ -530,10 +553,15 @@ async function startOPM() {
     let res = await fetch(filesURLBase + "packages.json")
     let packages = await res.json()
     for (let package of packages) {
-        opmPackages.set(package.name, new PackageItem(package))
+        opmPackages.push(new PackageItem(package))
     }
     updatePackageList()
     await worldJoinPromise
+
+    //add bigChatToggle
+    {
+
+    }
 
     //fix tools window so it grows properly
     {
@@ -569,6 +597,48 @@ async function startOPM() {
         }
     }
 
+    //prevent showPlayerList and showDevChat from being called by the rank event handler
+    {
+        let mainModule = OWOP.require("main")
+        let originalShowPlayerList = mainModule.showPlayerList
+        let originalShowDevChat = mainModule.showDevChat
+        originalShowDevChat(true) //just throwing this in here to always show it, unsure if it works
+        mainModule.showPlayerList = function() {
+            let stack = new Error().stack
+            let line = stack.split("\n")[2]
+            if (line && line.includes("app") && line.includes(".js")) return
+            Reflect.apply(originalShowPlayerList, this, arguments)
+        }
+        mainModule.showDevChat = function() {
+            let stack = new Error().stack
+            let line = stack.split("\n")[2]
+            if (line && line.includes("app") && line.includes(".js")) return
+            Reflect.apply(originalShowDevChat, this, arguments)
+        }
+    }
+
+    //create global OPM
+    window.OPM = {
+        element: document.getElementById("opm"),
+        packList,
+        packages: opmPackages,
+        PackageItem,
+        tab: "packages",
+        uploadButton: null,
+        uploadScript: null,
+        uploadThumbnail: null,
+        user,
+        attemptLogin: () => {},
+        constructor: () => {},
+        loggedIn: () => {},
+        reloadPackages: () => {},
+        require: name => {
+            return opmPackages.find(pack => pack.name === name).module
+        },
+        switchTab: () => {},
+        updatePackageList
+    }
+
     for (let packageName of user.installed) {
         let packageItem = opmPackages.get(packageName)
         if (!packageItem) {
@@ -580,14 +650,14 @@ async function startOPM() {
     }
 }
 
-let opmPackages = new Map()
+let opmPackages = []
 let packList
 
 function updatePackageList() {
     while (packList.firstChild) {
         packList.removeChild(packList.firstChild)
     }
-    for (let package of opmPackages.values()) {
+    for (let package of opmPackages) {
         packList.appendChild(package.element)
     }
 }
@@ -622,5 +692,4 @@ addEventListener("load", () => {
 
 
 
-
-//TODO: prevent revealSecrets, showDevChat, and showPlayerList from being called based on rank
+//TODO: add better chat toggle
