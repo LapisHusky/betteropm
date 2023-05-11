@@ -10,7 +10,7 @@
     }, 10000);*/
     console.log('loading core-utils');
 
-    const OWOP_Events = OWOP.require('events');
+    const Events = OWOP.require('events');
 
     class Player {
         constructor(id, x, y, rgb, tool) {
