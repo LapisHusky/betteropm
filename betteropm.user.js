@@ -646,6 +646,33 @@ async function startOPM() {
         }
     }
 
+    //switch createContextMenu over to the function OPM uses, i'm too lazy to clean this up but it mostly works
+    {
+        OWOP.require("context").createContextMenu = function (t, e, n) {
+            var r = !1;
+            r && i();
+            var o = document.createElement("div");
+            o.className = "context-menu";
+
+            o.innerHTML = "";
+            for (var a = 0; a < n.length; a++) {
+                var s = document.createElement("button");
+                s.textContent = n[a][0], s.addEventListener("click", n[a][1]), o.appendChild(s)
+            }
+            document.body.appendChild(o), r = !0;
+            var c = o.offsetHeight; var date = Date.now();
+            console.log(o), e + c > window.innerHeight - 20 ? o.style.top = e - c + "px" : o.style.top = e + "px";
+            o.style.left = t + "px", document.addEventListener("click", E => { i(E, date) })
+
+
+            function i(t, date) {
+                var da = Date.now();
+                if (da - date <= 10) return;
+                o.remove(), document.removeEventListener("click", i), r = !1
+            }
+        }
+    }
+
     //create global OPM
     window.OPM = {
         element: document.getElementById("opm"),
