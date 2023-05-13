@@ -12,8 +12,8 @@
 //this uses https://github.com/LapisHusky/betteropm to download scripts, json, and images. you may make pull requests there to change/add packages.
 const filesURLBase = localStorage.OPMFilesURL || "https://raw.githubusercontent.com/LapisHusky/betteropm/main/"
 
+//hacky method of getting owop's internal modules, works because Webpack calls Object.defineProperty on all modules
 let moduleList = []
-
 let originalFunction = Object.defineProperty
 Object.defineProperty = function () {
     let returnValue = originalFunction.call(originalFunction, ...arguments)
@@ -36,6 +36,7 @@ let worldJoinPromise = new Promise(r => {
 let modules = {}
 
 function finishedLoading() {
+    //attempt to find which modules are which
     modules.bucket = moduleList.find(module => module.Bucket)
     modules.canvas_renderer = moduleList.find(module => module.unloadFarClusters)
     modules.captcha = moduleList.find(module => module.loadAndRequestCaptcha)
@@ -515,6 +516,7 @@ class PackageItem {
         this.setInstalled(true)
         for (let dependency of this.dependencies) {
             let dependencyPackageItem = opmPackages.find(pack => pack.name === dependency)
+            //create an array of promises for installing each dependency, this allows dependency scripts to be downloaded in parallel
             let installPromises = []
             if (!dependencyPackageItem.installed) {
                 installPromises.push(dependencyPackageItem.install())
@@ -527,6 +529,7 @@ class PackageItem {
             this.module = unstrictEval(script)
         }
         this.module.install()
+        //if this is a dependency, it may not be in the user's installed package list, so we add it here
         if (!user.installed.includes(this.name)) {
             user.installed.push(this.name)
             saveInstalled()
@@ -538,9 +541,10 @@ class PackageItem {
 
     uninstall() {
         if (!this.installed) return
+        //check if any other installed packages require this package to be installed
         let usedBy = []
         for (let packageItem of opmPackages) {
-            if (!packageItem.installing && !packageItem.installed) continue
+            if (!packageItem.installPromise && !packageItem.installed) continue
             if (!packageItem.dependencies.includes(this.name)) continue
             usedBy.push(packageItem.name)
         }
@@ -557,13 +561,36 @@ class PackageItem {
 }
 
 async function startOPM() {
+    //setup base opm html/css
+    document.head.appendChild(style)
+    document.body.insertAdjacentHTML("beforeend", htmlText);
+    document.getElementById("opm-header").addEventListener("click", function () {
+        document.getElementById("opm").classList.toggle("open")
+    })
+
+    //setup package list
     let res = await fetch(filesURLBase + "packages.json")
     let packages = await res.json()
     for (let package of packages) {
         opmPackages.push(new PackageItem(package))
     }
     updatePackageList()
-    await worldJoinPromise
+
+    //change the top bar to opm's element structure
+    {
+        let xyDisplay = document.getElementById("xy-display")
+        xyDisplay.className = "top-bar"
+        document.body.removeChild(xyDisplay)
+        let playercountDisplay = document.getElementById("playercount-display")
+        playercountDisplay.className = "top-bar"
+        document.body.removeChild(playercountDisplay)
+        let topBar = document.createElement("div")
+        topBar.id = "top-bar"
+        topBar.style.transform = "initial"
+        topBar.appendChild(xyDisplay)
+        topBar.appendChild(playercountDisplay)
+        document.body.appendChild(topBar)
+    }
 
     //add bigChatToggle
     {
@@ -676,7 +703,7 @@ async function startOPM() {
     //create global OPM
     window.OPM = {
         element: document.getElementById("opm"),
-        packList,
+        packList: document.getElementById("opm-packages"),
         packages: opmPackages,
         PackageItem,
         tab: "packages",
@@ -695,6 +722,8 @@ async function startOPM() {
         updatePackageList
     }
 
+    //wait until we're in the world before installing packages because some stuff seems to require that, then install packages
+    await worldJoinPromise
     for (let packageName of user.installed) {
         let packageItem = opmPackages.find(pack => pack.name === packageName)
         if (packageItem) packageItem.install()
@@ -702,9 +731,9 @@ async function startOPM() {
 }
 
 let opmPackages = []
-let packList
 
 function updatePackageList() {
+    let packList = document.getElementById("opm-packages")
     while (packList.firstChild) {
         packList.removeChild(packList.firstChild)
     }
@@ -714,27 +743,6 @@ function updatePackageList() {
 }
 
 addEventListener("load", () => {
-    document.head.appendChild(style)
-    document.body.insertAdjacentHTML("beforeend", htmlText);
-    document.getElementById("opm-header").addEventListener("click", function () {
-        document.getElementById("opm").classList.toggle("open")
-    })
-
-    //some adjustments to align with OPM
-    let xyDisplay = document.getElementById("xy-display")
-    xyDisplay.className = "top-bar"
-    document.body.removeChild(xyDisplay)
-    let playercountDisplay = document.getElementById("playercount-display")
-    playercountDisplay.className = "top-bar"
-    document.body.removeChild(playercountDisplay)
-    let topBar = document.createElement("div")
-    topBar.id = "top-bar"
-    topBar.style.transform = "initial"
-    topBar.appendChild(xyDisplay)
-    topBar.appendChild(playercountDisplay)
-    document.body.appendChild(topBar)
-
-    packList = document.getElementById("opm-packages")
     startOPM()
 })
 
