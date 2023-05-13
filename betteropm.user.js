@@ -533,7 +533,7 @@ class PackageItem {
         }
         this.installed = true
         resolve()
-        this.installing = null
+        this.installPromise = null
     }
 
     uninstall() {
