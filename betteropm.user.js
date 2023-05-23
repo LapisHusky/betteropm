@@ -630,6 +630,18 @@ async function startOPM() {
         }
         OWOP.tools.updateToolbar = newFunction
         owopTools.updateToolbar = newFunction
+
+        //OWOP.tools.addToolObject in the original script only calls the internal updateToolbar, which doesn't have window resizing. This extra layer replaces addToolObject so resizing gets done.
+        //without this function getting replaced, the tool window remains 1 unit wide if plugins add tools totaling to 9.
+        //with it, the tool window gets properly resized to 2 units when plugins add tools to 9.
+        let originalAdd = OWOP.tools.addToolObject
+        let newAddFunction = function () {
+            Reflect.apply(originalAdd, this, arguments)
+            let container = owopTools.toolsWindow.container
+            container.style.maxWidth = 40 * Math.ceil(container.children.length / 8) + "px"
+        }
+        OWOP.tools.addToolObject = newAddFunction
+        owopTools.addToolObject = newAddFunction
     }
 
     //add missing elements in publicAPI
