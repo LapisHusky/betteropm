@@ -1,5 +1,19 @@
 [
     {
+        "name": "show-place-id",
+        "version": "v1.0",
+        "author": "Nitsua#8703",
+        "description": "Shows the player's ID above a pixel placed. This just implements what moderators see, except this package allows normal users to see it.",
+        "categories": [],
+        "dependencies": [],
+        "installs": 0,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1684906513066,
+        "noThumb": true
+    },
+    {
         "name": "owop-tool-class",
         "version": "v1.1",
         "author": "саня махан (rus)",
