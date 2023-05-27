@@ -663,6 +663,9 @@ async function startOPM() {
             bucket.__proto__.update = updateFn
             return bucket
         }
+        //add update to intial existing buckets too
+        OWOP.net.protocol.placeBucket.__proto__.update = updateFn
+        OWOP.net.protocol.chatBucket.__proto__.update = updateFn
     }
 
     //prevent showPlayerList and showDevChat from being called by the rank event handler
@@ -711,6 +714,10 @@ async function startOPM() {
             }
         }
     }
+
+    //TODO: override some of the canvas renderer so renderPlayerId and drawText can be exposed in OWOP.require("canvas_renderer").renderer
+    //currently renderPlayerId is part of renderPlayer which seems to not be included in the public api?
+    //this may require major replacing and not much uses it, so i'm not bothering with it right now
 
     //create global OPM
     window.OPM = {
