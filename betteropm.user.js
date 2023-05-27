@@ -35,9 +35,15 @@ let worldJoinPromise = new Promise(r => {
 
 let modules = {}
 
+let opmModule = {
+    get Opm() {
+        console.warn(`something tried to get OWOP.require("opm").Opm, this is unsupported`)
+        return () => { }
+    }
+}
+
 function finishedLoading() {
     //attempt to find which modules are which
-    modules.bucket = moduleList.find(module => module.Bucket)
     modules.canvas_renderer = moduleList.find(module => module.unloadFarClusters)
     modules.captcha = moduleList.find(module => module.loadAndRequestCaptcha)
     modules.conf = moduleList.find(module => module.EVENTS)
@@ -46,15 +52,27 @@ function finishedLoading() {
     modules.global = moduleList.find(module => module.PublicAPI)
     modules.local_player = moduleList.find(module => module.networkRankVerification)
     modules.main = moduleList.find(module => module.revealSecrets)
-    modules.misc = moduleList.find(module => module.setCookie)
-    modules.networking = moduleList.find(module => module.net)
     modules.Player = moduleList.find(module => module.Player)
-    modules.tools = moduleList.find(module => module.showToolsWindow)
     modules.windowsys = moduleList.find(module => module.windowSys)
     modules.World = moduleList.find(module => module.World)
-
     modules.events = modules.global.eventSys.constructor
-    modules.all = moduleList //it's unsafe to access these by index as those values may change
+    //modules not in https://opm.dimden.dev/docs/ but still work in OPM's OWOP.require()
+    //some of these are just useless nonsense like polyfill/canvas-toBlob and protocol/v0x00 and they've been omitted
+    modules.networking = moduleList.find(module => module.net)
+    modules.tools = moduleList.find(module => module.showToolsWindow)
+    modules.tool_renderer = moduleList.find(module => module.cursors)
+    modules["protocol/Protocol"] = moduleList.find(module => module.Protocol)
+    modules["protocol/all"] = moduleList.find(module => module.definedProtos)
+    modules["protocol/old"] = moduleList.find(module => module.OldProtocol)
+    modules["util/Bucket"] = moduleList.find(module => module.Bucket)
+    modules["util/Lerp"] = moduleList.find(module => module.Lerp)
+    modules["util/anchorme"] = moduleList.find(module => module.default?.validate).default
+    modules["util/misc"] = moduleList.find(module => module.setCookie)
+    modules["util/color"] = moduleList.find(module => module.colorUtils)
+    modules["util/normalizeWheel"] = moduleList.find(module => module.normalizeWheel)
+    modules.opm = opmModule
+    //why not
+    modules.all = moduleList //do note that it's unsafe to access these by index as those values may change
 
     //set OWOP.net and prevent revealSecrets from removing it
     OWOP.net = modules.networking.net
@@ -71,11 +89,9 @@ function finishedLoading() {
 
     //add OWOP.require
     OWOP.require = function getModule(name) {
-        if (modules[name]) {
-            return modules[name]
-        } else {
-            throw new Error(`No module by the name ${name}`)
-        }
+        if (name.endsWith(".js")) name = name.substring(0, name.length - 3)
+        if (modules[name]) return modules[name]
+        throw new Error(`No module by the name ${name}`)
     }
 
     //add other events to OWOP.events
@@ -653,7 +669,7 @@ async function startOPM() {
 
     //add "update" to Bucket
     {
-        let bucketModule = OWOP.require("bucket")
+        let bucketModule = OWOP.require("util/Bucket")
         let original = bucketModule.Bucket
         let updateFn = function () {
             this.allowance += (Date.now() - this.lastCheck) / 1e3 * (this.rate / this.time), this.lastCheck = Date.now(), this.allowance > this.rate && (this.allowance = this.rate)
@@ -740,6 +756,9 @@ async function startOPM() {
         switchTab: () => { },
         updatePackageList
     }
+
+    //add PakcageItem = OWOP.require("opm")
+    opmModule.PackageItem = PackageItem
 
     //wait until we're in the world before installing packages because some stuff seems to require that, then install packages
     await worldJoinPromise
