@@ -19,6 +19,12 @@ Object.defineProperty = function () {
     let returnValue = originalFunction.call(originalFunction, ...arguments)
     let object = arguments[0]
     if (!object?.__esModule) return returnValue
+
+    //ignore scripts other than owop's app.js
+    let stack = new Error().stack
+    let line = stack.split("\n")[2]
+    if (!line || !line.includes("app")) return returnValue
+
     moduleList.push(object)
     if (moduleList.length === 1) {
         setTimeout(() => {
@@ -593,18 +599,15 @@ async function startOPM() {
     updatePackageList()
 
     //change the top bar to opm's element structure
+    //this has been changed a bit since topright-displays was added, dinfo-display and playercount-display will be kept within their separate topright-displays element
     {
         let xyDisplay = document.getElementById("xy-display")
         xyDisplay.className = "top-bar"
         document.body.removeChild(xyDisplay)
-        let playercountDisplay = document.getElementById("playercount-display")
-        playercountDisplay.className = "top-bar"
-        document.body.removeChild(playercountDisplay)
         let topBar = document.createElement("div")
         topBar.id = "top-bar"
         topBar.style.transform = "initial"
         topBar.appendChild(xyDisplay)
-        topBar.appendChild(playercountDisplay)
         document.body.appendChild(topBar)
     }
 
