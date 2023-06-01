@@ -72,19 +72,19 @@
 						}
 						if(pl[p].children.length !== 6) {
 							let nickelement = document.createElement("td");
-							nickelement.innerText = pls[p].nick?pls[p].nick.slice(0, 16):"Unknown";
+							nickelement.innerText = pls[p].nick?pls[p].nick.slice(0, 16):"";
 							pl[p].appendChild(nickelement);
 							pl[p].innerHTML += `<td>${pls[p].tool}</td><td><div style="width:15px;height:15px;background-color:rgb(${pls[p].rgb.join(',')})" title="${pls[p].rgb.join(', ')}" onclick="color(${pls[p].rgb})"></div></td>`;
-							pl[p].children[0].title = pls[p].nick ? pls[p].nick : "Unknown"
+							pl[p].children[0].title = pls[p].nick ? pls[p].nick : ""
 						} else {
 							pl[p].deleteCell(5);
 							pl[p].deleteCell(4);
 							pl[p].deleteCell(3);
 							let nickelement = document.createElement("td");
-							nickelement.innerText = pls[p].nick?pls[p].nick.slice(0, 16):"Unknown";
+							nickelement.innerText = pls[p].nick?pls[p].nick.slice(0, 16):"";
 							pl[p].appendChild(nickelement);
 							pl[p].innerHTML += `<td>${pls[p].tool}</td><td><div style="width:15px;height:15px;background-color:rgb(${pls[p].rgb.join(',')})" title="${pls[p].rgb.join(', ')}" onclick="color(${pls[p].rgb})"></div></td>`;
-							pl[p].children[0].title = pls[p].nick ? pls[p].nick : "Unknown"
+							pl[p].children[0].title = pls[p].nick ? pls[p].nick : ""
 						}
 					} else {
 						if(pl[p].children.length === 6) {
@@ -94,12 +94,12 @@
 						}
 						if(pl[p].children.length !== 5) {
 							pl[p].innerHTML += `<td>${pls[p].tool}</td><td><div style="width:15px;height:15px;background-color:rgb(${pls[p].rgb.join(',')})" title="${pls[p].rgb.join(', ')}" onclick="color(${pls[p].rgb})"></div></td>`;
-							pl[p].children[0].title = pls[p].nick ? pls[p].nick : "Unknown"
+							pl[p].children[0].title = pls[p].nick ? pls[p].nick : ""
 						} else {
 							pl[p].deleteCell(4);
 							pl[p].deleteCell(3);
 							pl[p].innerHTML += `<td>${pls[p].tool}</td><td><div style="width:15px;height:15px;background-color:rgb(${pls[p].rgb.join(',')})" title="${pls[p].rgb.join(', ')}" onclick="color(${pls[p].rgb})"></div></td>`;
-							pl[p].children[0].title = pls[p].nick ? pls[p].nick : "Unknown"
+							pl[p].children[0].title = pls[p].nick ? pls[p].nick : ""
 						}
 					}
 				});
