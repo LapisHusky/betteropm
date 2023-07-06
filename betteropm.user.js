@@ -734,6 +734,17 @@ async function startOPM() {
         }
     }
 
+    //add OWOP.camera.x and y setters
+    {
+        let renderer = OWOP.require("canvas_renderer")
+        OWOP.camera.__defineSetter__("x", value => {
+            renderer.moveCameraTo(value, OWOP.camera.y)
+        })
+        OWOP.camera.__defineSetter__("y", value => {
+            renderer.moveCameraTo(OWOP.camera.x, value)
+        })
+    }
+
     //TODO: override some of the canvas renderer so renderPlayerId and drawText can be exposed in OWOP.require("canvas_renderer").renderer
     //currently renderPlayerId is part of renderPlayer which seems to not be included in the public api?
     //this may require major replacing and not much uses it, so i'm not bothering with it right now
