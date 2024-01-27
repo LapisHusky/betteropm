@@ -231,7 +231,9 @@
                 return msg;
             });
 
+            let oldModifier = OWOP.misc.chatSendModifier;
             OWOP.misc.chatSendModifier = msg => {
+                msg = oldModifier(msg);
                 if (!msg.startsWith('/')) return msg;
                 let command = msg.slice(1).split(' ');
 
