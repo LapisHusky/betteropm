@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 //this uses https://github.com/LapisHusky/betteropm to download scripts, json, and images. you may make pull requests there to change/add packages.
-const filesURLBase = localStorage.OPMFilesURL || "https://raw.githubusercontent.com/LapisHusky/betteropm/main/"
+const filesURLBase = localStorage.OPMFilesURL || "https://raw.githubusercontent.com/ar065/betteropm/main/"
 
 //hacky method of getting owop's internal modules, works because Webpack calls Object.defineProperty on all modules
 let moduleList = []
