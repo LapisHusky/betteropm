@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       https://ourworldofpixels.com/*
 // @grant       none
-// @version     1.0
+// @version     1.1
 // @author      Lapis
 // @description 5/9/2023, 12:07:00 AM
 // @run-at      document-start
