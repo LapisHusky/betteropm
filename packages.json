@@ -1,5 +1,19 @@
 [
     {
+        "name": "highlight-mentions",
+        "version": "v1.0",
+        "author": "Nitsua#8703",
+        "description": "Highlights own messages and mentions",
+        "categories": [],
+        "dependencies": [],
+        "installs": 69,
+        "likes": 0,
+        "dislikes": 0,
+        "cost": -1,
+        "created": 1690915086010,
+        "noThumb": true
+    },
+    {
         "name": "show-place-id",
         "version": "v1.0",
         "author": "Nitsua#8703",
