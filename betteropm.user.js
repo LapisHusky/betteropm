@@ -3,36 +3,14 @@
 // @namespace   Violentmonkey Scripts
 // @match       https://ourworldofpixels.com/*
 // @grant       none
-// @version     1.1
+// @version     1.2
 // @author      Lapis
 // @description 5/9/2023, 12:07:00 AM
 // @run-at      document-start
 // ==/UserScript==
 
 //this uses https://github.com/LapisHusky/betteropm to download scripts, json, and images. you may make pull requests there to change/add packages.
-const filesURLBase = localStorage.OPMFilesURL || "https://raw.githubusercontent.com/ar065/betteropm/main/"
-
-//hacky method of getting owop's internal modules, works because Webpack calls Object.defineProperty on all modules
-let moduleList = []
-let originalFunction = Object.defineProperty
-Object.defineProperty = function () {
-    let returnValue = originalFunction.call(originalFunction, ...arguments)
-    let object = arguments[0]
-    if (!object?.__esModule) return returnValue
-
-    //ignore scripts other than owop's app.js
-    let stack = new Error().stack
-    let line = stack.split("\n")[2]
-    if (!line || !line.includes("app")) return returnValue
-
-    moduleList.push(object)
-    if (moduleList.length === 1) {
-        setTimeout(() => {
-            finishedLoading()
-        }, 0)
-    }
-    return returnValue
-}
+const filesURLBase = localStorage.OPMFilesURL || "https://raw.githubusercontent.com/LapisHusky/betteropm/main/"
 
 let worldJoinPromiseResolve
 let worldJoinPromise = new Promise(r => {
@@ -50,45 +28,74 @@ let opmModule = {
 
 function finishedLoading() {
     //attempt to find which modules are which
-    modules.canvas_renderer = moduleList.find(module => module.unloadFarClusters)
-    modules.captcha = moduleList.find(module => module.loadAndRequestCaptcha)
-    modules.conf = moduleList.find(module => module.EVENTS)
-    modules.context = moduleList.find(module => module.createContextMenu)
-    modules.Fx = moduleList.find(module => module.PLAYERFX)
-    modules.global = moduleList.find(module => module.PublicAPI)
-    modules.local_player = moduleList.find(module => module.networkRankVerification)
-    modules.main = moduleList.find(module => module.revealSecrets)
-    modules.Player = moduleList.find(module => module.Player)
-    modules.windowsys = moduleList.find(module => module.windowSys)
-    modules.World = moduleList.find(module => module.World)
-    modules.events = modules.global.eventSys.constructor
+    modules.canvas_renderer = {
+        // ...OWOP.renderer,
+        camera: OWOP.camera,
+        centerCameraTo: OWOP.camera.centerCameraTo,
+        moveCameraBy: OWOP.camera.moveCameraBy,
+        moveCameraTo: OWOP.camera.moveCameraTo,
+        isVisible: OWOP.camera.isVisible,
+        renderer: OWOP.renderer
+    }
+    // modules.captcha = moduleList.find(module => module.loadAndRequestCaptcha)
+    modules.conf = {
+        protocol: OWOP.protocol,
+        RANK: OWOP.RANK,
+        EVENTS: OWOP.events,
+        options: OWOP.options
+    }
+    modules.context = OWOP.context
+    modules.Fx = {
+        WORLDFX: OWOP.fx.world,
+        PLAYERFX: OWOP.fx.player,
+        Fx: OWOP.fx.class,
+        activeFx: OWOP.activeFx
+    }
+    modules.global = {
+        ...OWOP.global,
+        PublicAPI: OWOP
+    }
+    // modules.local_player = moduleList.find(module => module.networkRankVerification)
+    modules.main = {
+        showDevChat: OWOP.showDevChat,
+        showPlayerList: OWOP.showPlayerList,
+        statusMsg: OWOP.statusMsg,
+        sounds: OWOP.sounds,
+        misc: OWOP.misc,
+        elements: OWOP.elements,
+        mouse: OWOP.mouse
+    }
+    // modules.Player = moduleList.find(module => module.Player)
+    modules.windowsys = {
+        ...OWOP.windowSys,
+        windowSys: OWOP.windowSys,
+        UtilInput: OWOP.windowSys.class.input,
+        UtilDialog: OWOP.windowSys.class.dialog,
+        OWOPDropDown: OWOP.windowSys.class.dropDown,
+        GUIWindow: OWOP.windowSys.class.window,
+    }
+    // modules.World = moduleList.find(module => module.World)
+    modules.events = OWOP.global.eventSys.constructor
     //modules not in https://opm.dimden.dev/docs/ but still work in OPM's OWOP.require()
     //some of these are just useless nonsense like polyfill/canvas-toBlob and protocol/v0x00 and they've been omitted
-    modules.networking = moduleList.find(module => module.net)
-    modules.tools = moduleList.find(module => module.showToolsWindow)
-    modules.tool_renderer = moduleList.find(module => module.cursors)
-    modules["protocol/Protocol"] = moduleList.find(module => module.Protocol)
-    modules["protocol/all"] = moduleList.find(module => module.definedProtos)
-    modules["protocol/old"] = moduleList.find(module => module.OldProtocol)
-    modules["util/Bucket"] = moduleList.find(module => module.Bucket)
-    modules["util/Lerp"] = moduleList.find(module => module.Lerp)
-    modules["util/anchorme"] = moduleList.find(module => module.default?.validate).default
-    modules["util/misc"] = moduleList.find(module => module.setCookie)
-    modules["util/color"] = moduleList.find(module => module.colorUtils)
-    modules["util/normalizeWheel"] = moduleList.find(module => module.normalizeWheel)
-    modules.opm = opmModule
-    //why not
-    modules.all = moduleList //do note that it's unsafe to access these by index as those values may change
-
-    //set OWOP.net and prevent revealSecrets from removing it
-    OWOP.net = modules.networking.net
-    modules.main.revealSecrets = () => { }
+    modules.networking = {
+        net: OWOP.net
+    }
+    modules.tools = OWOP.tools
+    // modules.tool_renderer = moduleList.find(module => module.cursors)
+    modules["protocol/Protocol"] = OWOP.Protocol;
+    // modules["protocol/all"] = moduleList.find(module => module.definedProtos)
+    // modules["protocol/old"] = moduleList.find(module => module.OldProtocol)
+    modules["util/Bucket"] = OWOP.Bucket
+    modules["util/Lerp"] = OWOP.Lerp
+    modules["util/anchorme"] = undefined;
+    // modules["util/misc"] = moduleList.find(module => module.setCookie)
+    // modules["util/color"] = moduleList.find(module => module.colorUtils)
+    // modules["util/normalizeWheel"] = moduleList.find(module => module.normalizeWheel)
+    modules.opm = opmModule;
 
     //add OWOP.eventSys
     OWOP.eventSys = modules.global.eventSys
-
-    //add OWOP.misc
-    OWOP.misc = modules.main.misc
 
     //set OWOP.tool because apparently OPM puts it there instead of OPM.tools
     OWOP.tool = OWOP.tools
@@ -98,12 +105,6 @@ function finishedLoading() {
         if (name.endsWith(".js")) name = name.substring(0, name.length - 3)
         if (modules[name]) return modules[name]
         throw new Error(`No module by the name ${name}`)
-    }
-
-    //add other events to OWOP.events
-    let allEvents = modules.conf.EVENTS
-    for (let key in allEvents) {
-        OWOP.events[key] = allEvents[key]
     }
 
     //world join promise - triggers loading OPM further
@@ -603,7 +604,7 @@ async function startOPM() {
     {
         let xyDisplay = document.getElementById("xy-display")
         xyDisplay.className = "top-bar"
-        document.body.removeChild(xyDisplay)
+        xyDisplay.parentElement.removeChild(xyDisplay)
         let topBar = document.createElement("div")
         topBar.id = "top-bar"
         topBar.style.transform = "initial"
@@ -795,11 +796,6 @@ function updatePackageList() {
 }
 
 addEventListener("load", () => {
+    finishedLoading()
     startOPM()
 })
-
-
-
-
-
-
